@@ -21,7 +21,7 @@ class UserFactory extends Factory
         return [
             'name' => 'Beyond',
             'email' => 'admin@beyond.com',
-            'password' => Hash::make('12345678'),
+            'password' => '12345678',
             'is_admin' => true,
         ];
     }
