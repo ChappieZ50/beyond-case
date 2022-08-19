@@ -1,5 +1,7 @@
 #### Documentation
-
+    composer install
+    "update .env file"
+    php artisan key:generate
     php artisan migrate
     php artisan db:seed
 
