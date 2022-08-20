@@ -16,25 +16,20 @@ class RecordService
         return Str::slug(auth()->user()->name) . '-' . Str::random(6) . '.' . $this->file->extension();
     }
 
-    private function uploadRecord()
+    private function uploadRecord(): bool
     {
         $this->fileName = $this->uniqueRecordName();
-        Storage::disk('public')->putFileAs(
+        return Storage::disk('public')->putFileAs(
             path: 'records/',
             file: $this->file,
             name: $this->fileName
         );
-        return $this;
-    }
-
-    private function getDuration()
-    {
     }
 
     public function saveRecord($request): array
     {
         $this->file = $request->file('record');
-        $data['duration'] = $this->uploadRecord()->getDuration();
+        $this->uploadRecord();
         $data['record'] = $this->fileName;
         $data['message'] = $request->get('message');
         $data['duration'] = $request->get('duration');
