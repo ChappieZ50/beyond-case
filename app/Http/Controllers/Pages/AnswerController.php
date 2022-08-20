@@ -7,7 +7,6 @@ use App\Models\Answer;
 use App\Models\Vote;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class AnswerController extends Controller
 {
