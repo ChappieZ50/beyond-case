@@ -9,6 +9,9 @@ use Illuminate\Support\Collection;
 
 class DashboardService
 {
+    /**
+     * @return Collection
+     */
     public function analytics(): Collection
     {
         return Collection::make([

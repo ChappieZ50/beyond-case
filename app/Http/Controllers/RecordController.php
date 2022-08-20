@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\AnswerContract;
 use App\Http\Requests\Pages\RecordRequest;
-use App\Models\Answer;
 use App\Services\RecordService;
+use Illuminate\Http\JsonResponse;
 
 class RecordController extends Controller
 {
+    protected AnswerContract $answer;
+
+    public function __construct(AnswerContract $answer)
+    {
+        $this->answer = $answer;
+    }
+
     public function index()
     {
         if (!auth()->user()->is_admin)
@@ -16,9 +24,9 @@ class RecordController extends Controller
         return redirect()->route('dashboard');
     }
 
-    public function store(RecordRequest $request, RecordService $service, Answer $answer)
+    public function store(RecordRequest $request, RecordService $service): JsonResponse
     {
-        $answer->fill($service->saveRecord($request))->save();
+        $this->answer->fill($service->saveRecord($request))->save();
 
         return response()->json([
             'message' => 'Your record successfully send. Redirecting...',

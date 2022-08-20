@@ -11,21 +11,31 @@ class RecordService
     protected UploadedFile $file;
     protected string $fileName;
 
+    /**
+     * @return string
+     */
     private function uniqueRecordName(): string
     {
         return Str::slug(auth()->user()->name) . '-' . Str::random(6) . '.' . $this->file->extension();
     }
 
-    private function uploadRecord(): bool
+    /**
+     * @return void
+     */
+    private function uploadRecord(): void
     {
         $this->fileName = $this->uniqueRecordName();
-        return Storage::disk('public')->putFileAs(
+        Storage::disk('public')->putFileAs(
             path: 'records/',
             file: $this->file,
             name: $this->fileName
         );
     }
 
+    /**
+     * @param $request
+     * @return array
+     */
     public function saveRecord($request): array
     {
         $this->file = $request->file('record');
@@ -34,5 +44,14 @@ class RecordService
         $data['message'] = $request->get('message');
         $data['duration'] = $request->get('duration');
         return $data;
+    }
+
+    /**
+     * @param $recordName
+     * @return string
+     */
+    public function getRecordUrl($recordName): string
+    {
+        return url('storage/records/' . $recordName);
     }
 }

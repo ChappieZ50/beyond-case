@@ -2,40 +2,45 @@
 
 namespace App\Http\Controllers\Pages;
 
+use App\Contracts\AnswerContract;
+use App\Contracts\VoteContract;
 use App\Http\Controllers\Controller;
-use App\Models\Answer;
-use App\Models\Vote;
+use App\Services\RecordService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AnswerController extends Controller
 {
+    protected AnswerContract $answer;
+    protected VoteContract $voteEntity;
+
+    public function __construct(AnswerContract $answer, VoteContract $voteEntity)
+    {
+        $this->answer = $answer;
+        $this->voteEntity = $voteEntity;
+    }
+
     public function index()
     {
-        $answers = Answer::orderByDesc('id')->simplePaginate();
+        $answers = $this->answer->orderByDesc()->simplePaginate();
         return view('pages.answer.index')->with('answers', $answers);
     }
 
 
-    public function show(Answer $answer)
+    public function show($id, RecordService $service)
     {
-        $record = url('storage/records/' . $answer->record);
+        $answer = $this->answer->find($id);
 
         return view('pages.answer.show')->with([
-            'record' => $record,
+            'record' => $service->getRecordUrl($answer->record),
             'answer' => $answer
         ]);
     }
 
-    public function vote(Answer $answer, Vote $vote, Request $request): JsonResponse
+    public function vote($id, Request $request): JsonResponse
     {
-        $data = [
-            'vote' => (bool)$request->get('vote') ? 1 : -1,
-            'user_id' => auth()->id(),
-            'answer_id' => $answer->id
-        ];
-
-        $vote->fill($data)->save();
+        $answer = $this->answer->find($id);
+        $this->voteEntity->vote($answer->id, (bool)$request->get('vote'));
 
         return response()->json([
             'message' => 'Answer voted'

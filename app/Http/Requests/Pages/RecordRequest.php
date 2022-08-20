@@ -25,7 +25,7 @@ class RecordRequest extends FormRequest
     {
         return [
             'message' => 'required|min:10|max:1000',
-            'record' => 'required|file',
+            'record' => 'required|file|max:10240',
             'duration' => 'nullable'
         ];
     }

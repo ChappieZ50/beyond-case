@@ -13,6 +13,7 @@ class Vote extends Model
     protected $fillable = ['user_id', 'answer_id', 'vote'];
     protected $table = 'answer_votes';
 
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
